@@ -73,7 +73,7 @@ bashnote_addویرایش با Canvas
    git clone https://github.com/bahariiiiii/ CLABSI-prediction-model.git
    cd CLABSI-prediction-model
 2.	Install dependencies:
-                                            content_copy                        bashnote_addویرایش با Canvas
+  content_copy                        bashnote_add
    pip install -r requirements.txt
 3.	Run the pipeline:Open the Jupyter Notebook to reproduce the analytical workflow.
 ________________________________________
