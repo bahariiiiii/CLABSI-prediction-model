@@ -105,12 +105,12 @@ This section consolidates the project roadmap, repository setup, contributors, c
 
 ### 8.2 Repository structure
 
-```text
 CLABSI-prediction-model/
+├── .gitignore
 ├── LICENSE
 ├── README.md
 └── Under-development-SVM-model.ipynb
-```
+└── requirements.txt
 
 ### 8.3 Installation & environment setup (Python 3.9+)
 
@@ -129,7 +129,7 @@ Verify the repository name matches the clone URL exactly before publishing. The 
 | Name | Role | Affiliation |
 |---|---|---|
 | Bahar Homayoun (M.Sc.) | Lead Researcher | Health Information Management, TUMS |
-| Farid Zand (M.D.) | Co-Investigator | Anesthesiology & Critical Care Research Center, SUMS |
+| Farid Zand (M.D.) | Co-Supervisor | Anesthesiology & Critical Care Research Center, SUMS |
 | Naeimehossadat Asmarian (Ph.D.) | Co-Investigator | Anesthesiology & Critical Care Research Center, SUMS |
 | Victor Daniel Rosenthal (M.D.) | Co-Investigator | Univ. of Miami Miller School of Medicine; INICC |
 | Sharareh Rostam Niakan Kalhori (Ph.D.) | Senior Supervisor | Health Information Management, TUMS; TU Braunschweig & MHH |
@@ -149,8 +149,7 @@ Verify the repository name matches the clone URL exactly before publishing. The 
 ### 8.6 Recommendations before release
 
 1. Run the full pipeline end-to-end and freeze the benchmark tables and cohort counts in the README.
-2. Add a `requirements.txt` with pinned versions and confirm the LICENSE file content.
-3. Record the ethics approval and cohort baseline table in the README for public traceability.
+2. Record the ethics approval and cohort baseline table in the README for public traceability.
 
 ## 9 References
 
