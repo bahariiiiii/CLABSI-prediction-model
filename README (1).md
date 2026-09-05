@@ -3,6 +3,7 @@
 **2026-09-05**
 
 ## 1 Executive Summary & Project Status
+This project aims to develop a high-precision, clinically interpretable predictive model for **Central Line-Associated Bloodstream Infections (CLABSI)**. Utilizing advanced machine learning techniques, the goal is to identify high-risk patient cohorts early, enabling proactive clinical interventions and improved patient outcomes. The current architecture focuses on overcoming common clinical data challenges, such as severe class imbalance and missing data, while ensuring model transparency through explainable AI (XAI).
 
 ## 2 Project Overview & Code-Verified Status
 
