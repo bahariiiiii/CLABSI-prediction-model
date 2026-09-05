@@ -50,6 +50,9 @@ The pipeline is a self-contained, reproducible Jupyter notebook [1] driven by a 
 - **Development split (75 / 25):** the development set (and the 8 non-held-out ICUs in each LOIO fold) is further split into `dev_train` (75%) and `dev_val` (25%) — yielding an effective 60 / 20 / 20 split of the whole dataset.
 
 ### 5.2 Key technical choices (verified in code [1])
+### Methodological Rationale and Future Benchmarking
+In our preliminary development phase, we prioritized modeling strategies that balance predictive performance with clinical interpretability—a critical requirement for health informatics applications. The SVM algorithm , combined with automated class-weighting to address the inherent challenges of imbalanced clinical datasets, provided a robust and stable foundation for our initial model. Furthermore, we integrated SHAP (SHapley Additive exPlanations) for feature selection to ensure that the model’s predictive insights remain transparent and clinically actionable. 
+While these methods currently demonstrate superior discriminative performance compared to alternative approaches, we recognize that this is an iterative process. Therefore, these findings are considered exploratory. We have committed to a more rigorous, comprehensive benchmarking study in future development phases, where we will systematically evaluate our current framework. 
 
 - **Model:** Support Vector Classification with a linear kernel — `SVC(kernel="linear", probability=False, random_state=seed)` — optimized via `GridSearchCV` over the penalty parameter `C` and cost-sensitive `class_weight`. (The model is **not** `LinearSVC`, which uses a different liblinear-based optimizer.)
 - **Class imbalance:** handled via cost-sensitive class weighting in the objective function; synthetic oversampling (SMOTE) was deliberately omitted to avoid injecting synthetic noise into sensitive clinical variables.
@@ -101,6 +104,7 @@ This section consolidates the project roadmap, repository setup, contributors, c
 - [ ] **Execution & benchmark freeze:** complete formal execution runs on the finalized data extract and publish full statistical benchmark tables.
 - [ ] **Model comparison:** benchmark the linear SVM pipeline against Logistic Regression, Random Forest, and XGBoost under identical LOIO constraints.
 - [ ] **Feature selection comparison:** formally compare SHAP-based selection against $\ell_1$-penalized LASSO and Recursive Feature Elimination (RFE).
+- [ ] **Missing value handling exploration:** systematically evaluate alternative missing-data strategies (e.g., multiple imputation, median/mode imputation, and indicator-augmented models) against the current listwise `dropna` approach, under identical LOIO constraints, and quantify the impact on cohort size, calibration, and discrimination.
 - [ ] **External validation:** planned validation on external critical-care databases (e.g., MIMIC-IV).
 
 ### 8.2 Repository structure
