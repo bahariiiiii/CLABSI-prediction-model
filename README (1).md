@@ -2,11 +2,7 @@
 
 **2026-09-05**
 
-![Minimal project logo — clinical machine learning for CLABSI risk prediction](logo.png)
-
 ## 1 Executive Summary & Project Status
-
-![Minimal wide banner — ICU critical-care machine learning theme](banner.png)
 
 ## 2 Project Overview & Code-Verified Status
 
