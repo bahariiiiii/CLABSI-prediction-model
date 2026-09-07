@@ -1,9 +1,9 @@
 # Interpretable Machine Learning Framework for CLABSI Risk Prediction in Critical Care — Complete Documentation
 
-**2026-09-05**
 
 ## 1 Executive Summary & Project Status
-This project aims to develop a high-precision, clinically interpretable predictive model for **Central Line-Associated Bloodstream Infections (CLABSI)**. Utilizing advanced machine learning techniques, the goal is to identify high-risk patient cohorts early, enabling proactive clinical interventions and improved patient outcomes. The current architecture focuses on overcoming common clinical data challenges, such as severe class imbalance and missing data, while ensuring model transparency through explainable AI (XAI).
+
+This project aims to develop a high-precision, clinically interpretable predictive model for **Central Line-Associated Bloodstream Infections (CLABSI)**. Utilizing advanced machine learning and deep learning techniques, the goal is to identify high-risk patient cohorts early, enabling proactive clinical interventions and improved patient outcomes. The current architecture focuses on overcoming common clinical data challenges, such as severe class imbalance and missing data, while ensuring model transparency through explainable AI (XAI).
 
 ## 2 Project Overview & Code-Verified Status
 
@@ -17,26 +17,26 @@ The project builds a strictly leakage-free, interpretable machine-learning pipel
 
 Most predictive modeling efforts in clinical informatics report a single metric (e.g., AUC) on a random split and stop. This framework was designed to directly address the most common methodological pitfalls in clinical AI; each solution below was verified against the notebook implementation [1]:
 
-| Common Pitfall in ML-for-Health | Methodological Solution in This Project |
-|---|---|
+| Common Pitfall in ML-for-Health             | Methodological Solution in This Project                                                                                                                              |
+| ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Data leakage via full-dataset preprocessing | All feature selection, calibration, and threshold tuning are strictly confined to development data only; evaluation sets and held-out ICUs are touched exactly once. |
-| Ignoring institutional clustering | Manual Leave-One-ICU-Out (LOIO) validation holds out each ICU completely, evaluating models on units they never saw during training. |
-| Reporting only discrimination (AUC) | Evaluation includes pooled patient-level, macro ICU-level, and per-ICU performance with rigorous 95% confidence intervals. |
-| Opaque black-box decisions | Linear SVM (SVC with linear kernel) transparency combined with SHAP LinearExplainer attribution for feature-level and patient-level explanations. |
-| Ignoring actual clinical net benefit | Decision Curve Analysis (DCA) evaluates net benefit across decision thresholds against treat-all and treat-none strategies. |
-| Miscalibrated probabilities across units | Fold-specific Sigmoid (Platt) calibration fitted on development validation sets before evaluating on unseen data. |
+| Ignoring institutional clustering           | Manual Leave-One-ICU-Out (LOIO) validation holds out each ICU completely, evaluating models on units they never saw during training.                                 |
+| Reporting only discrimination (AUC)         | Evaluation includes pooled patient-level, macro ICU-level, and per-ICU performance with rigorous 95% confidence intervals.                                           |
+| Opaque black-box decisions                  | Linear SVM (SVC with linear kernel) transparency combined with SHAP LinearExplainer attribution for feature-level and patient-level explanations.                    |
+| Ignoring actual clinical net benefit        | Decision Curve Analysis (DCA) evaluates net benefit across decision thresholds against treat-all and treat-none strategies.                                          |
+| Miscalibrated probabilities across units    | Fold-specific Sigmoid (Platt) calibration fitted on the SVM’s `decision_function` outputs, using development validation data only; the isotonic branch exists but is unused.                                                    |
 
 Note that early project documentation mentioned SMOTE as a comparison strategy; the final notebook does **not** implement SMOTE — class imbalance is handled solely through cost-sensitive class weighting, a deliberate choice confirmed by the code audit [1].
 
 ## 4 Problem, Cohort & Study Setting
 
-**Target outcome:** Definite CLABSI, defined per CDC / NHSN 2017 criteria. **Eligibility:** adult patients admitted to intensive care units with a central venous catheter (CVC) in place > 48 hours. **Study design:** matched case-control cohort. The cohort and feature structure below are drawn from the project notebook [1]:
+**Target outcome:** Definite CLABSI, defined per CDC / NHSN 2017 criteria. **Eligibility:** adult patients admitted to intensive care units with a central venous catheter (CVC) in place > 48 hours. **Study design:** matched case-control cohort. The cohort and feature structure below are drawn from the project notebook [1].
 
-| Attribute | Details |
-|---|---|
-| Study center | Namazi Hospital (tertiary academic referral center), Shiraz, Iran [1] |
-| Participating ICUs | 9 specialized adult intensive care units (holdout units in LOIO are identified from the `ICU Name` column) |
-| Features | 53 features (21 categorical + 32 numeric), with duplicate-patient integrity checks and listwise missing-data handling (`dropna`) |
+| Attribute          | Details                                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| Study center       | Namazi Hospital (tertiary academic referral center), Shiraz, Iran [1]                                                            |
+| Participating ICUs | 9 specialized adult intensive care units (holdout units in LOIO are identified from the `ICU Name` column)                       |
+| Features           | 53 features (21 categorical + 32 numeric), with duplicate-patient integrity checks and listwise missing-data handling (`dropna`) |
 
 > **Note:** The notebook itself contains no embedded ethics approval string; the project-level ethics approval (Institutional Ethics Committee, TUMS — IR.TUMS.SPH.REC.1403.308) is documented in the project records rather than in the code [1]. Final cohort counts will be reconciled with the study protocol upon the final data freeze.
 
@@ -51,9 +51,12 @@ The pipeline is a self-contained, reproducible Jupyter notebook [1] driven by a 
 - **Development split (75 / 25):** the development set (and the 8 non-held-out ICUs in each LOIO fold) is further split into `dev_train` (75%) and `dev_val` (25%) — yielding an effective 60 / 20 / 20 split of the whole dataset.
 
 ### 5.2 Key technical choices (verified in code [1])
+
 ### Methodological Rationale and Benchmarking
-In our preliminary development phase, we prioritized modeling strategies that balance predictive performance with clinical interpretability—a critical requirement for health informatics applications. The SVM algorithm , combined with automated class-weighting to address the inherent challenges of imbalanced clinical datasets, provided a robust and stable foundation for our initial model. Furthermore, we integrated SHAP (SHapley Additive exPlanations) for feature selection to ensure that the model’s predictive insights remain transparent and clinically actionable. 
-While these methods currently demonstrate superior discriminative performance compared to alternative approaches, we recognize that this is an iterative process. Therefore, these findings are considered exploratory. We have committed to a more rigorous, comprehensive benchmarking study in future development phases, where we will systematically evaluate our current framework. 
+
+In our preliminary development phase, we prioritized modeling strategies that balance predictive performance with clinical interpretability—a critical requirement for health informatics applications. The SVM algorithm , combined with automated class-weighting to address the inherent challenges of imbalanced clinical datasets, provided a robust and stable foundation for our initial model. Furthermore, we integrated SHAP (SHapley Additive exPlanations) for feature selection to ensure that the model’s predictive insights remain transparent and clinically actionable.
+
+While these methods currently demonstrate superior discriminative performance compared to alternative approaches, we recognize that this is an iterative process. Therefore, these findings are considered exploratory. We have committed to a more rigorous, comprehensive benchmarking study in future development phases, where we will systematically evaluate our current framework.
 
 - **Model:** Support Vector Classification with a linear kernel — `SVC(kernel="linear", probability=False, random_state=seed)` — optimized via `GridSearchCV` over the penalty parameter `C` and cost-sensitive `class_weight`. (The model is **not** `LinearSVC`, which uses a different liblinear-based optimizer.)
 - **Class imbalance:** handled via cost-sensitive class weighting in the objective function; synthetic oversampling (SMOTE) was deliberately omitted to avoid injecting synthetic noise into sensitive clinical variables.
@@ -96,66 +99,54 @@ When executed, the pipeline systematically exports the following reproducible ar
 
 > **Integrity note:** no SMOTE artifacts, model serialization (joblib/pickle) outputs, or stored metrics exist in the notebook — consistent with its under-development, not-yet-executed status.
 
-## 8 Roadmap, Installation & Repository Guide
+## 8 Benchmarking Pipeline & LOIO Framework (Added 2026-09-07)
+
+A parallel Python benchmarking script (`clabsi_full_benchmark.py`) has been added to enable systematic comparison of Linear SVM, Logistic Regression, Random Forest, XGBoost, and MLP under identical conditions.
+
+### 8.1 Benchmarking Architecture
+
+- **MLP:** heavily regularized for the limited positive cases (300 positives in ~900 total samples): `(8,)` or `(16,)` hidden layers, strong L2 regularization (`alpha = 5e-4..1e-2`), very slow learning rate (`1e-4`), validation_fraction=0.25, n_iter_no_change=10, max_iter=600-800.
+- **Tree-based models:** conservative hyperparameters (n_estimators ≤ 200, max_depth ≤ 6).
+- **Shared preprocessing & pipeline** with the main SVM notebook (identical `OneHotEncoder` + StandardScaler, identical `GridSearchCV`, identical SHAP families, identical calibration and threshold tuning).
+- **LOIO:** fully shared splits and feature-selection logic across all 5 models.
+- **Clinical utility:** Decision Curve Analysis (DCA) and Risk Stratification tables generated for every model.
+
+### 8.2 Output Structure of Benchmarking Pipeline
+
+- Per-model main and LOIO folders .
+- All DCA plots, risk-stratification tables, and DeLong comparisons are generated automatically.
+
+### 8.3 Learning Curve
+
+Added to every main-model run (section 13).
+
+## 9 Roadmap, Installation & Repository Guide
 
 This section consolidates the project roadmap, repository setup, contributors, citation record, and pre-release recommendations.
 
-### 8.1 Future milestones
+### 9.1 Future milestones
 
 - [ ] **Execution & benchmark freeze:** complete formal execution runs on the finalized data extract and publish full statistical benchmark tables.
-- [ ] **Model comparison:** benchmark the linear SVM pipeline against Logistic Regression, Random Forest, and XGBoost under identical LOIO constraints.
-- [ ] **Feature selection comparison:** formally compare SHAP-based selection against $\ell_1$-penalized LASSO and Recursive Feature Elimination (RFE).
+- [ ] **Model comparison:** benchmark the linear SVM pipeline against Logistic Regression, Random Forest,  XGBoost and Multiple layer perceptron under identical LOIO constraints.
+- [ ] **Feature selection comparison:** formally compare SHAP-based selection against more sophisticated techniques.
 - [ ] **Missing value handling exploration:** systematically evaluate alternative missing-data strategies (e.g., multiple imputation, median/mode imputation, and indicator-augmented models) against the current listwise `dropna` approach, under identical LOIO constraints, and quantify the impact on cohort size, calibration, and discrimination.
-- [ ] **External validation:** planned validation on external critical-care databases (e.g., MIMIC-IV).
+- [ ] **External validation:** planned validation on external critical-care \ (e.g., MIMIC-IV or eICU).
 
-### 8.2 Repository structure
+### 9.2 Repository structure
 
 CLABSI-prediction-model/
 ├── .gitignore
 ├── LICENSE
 ├── README.md
-└── Under-development-SVM-model.ipynb
+├── Under-development-SVM-model.ipynb
+├── clabsi_full_benchmark.py
 └── requirements.txt
 
-### 8.3 Installation & environment setup (Python 3.9+)
+### 9.3 Installation & environment setup (Python 3.9+)
 
 ```bash
 git clone https://github.com/bahariiiiii/CLABSI-prediction-model.git
 cd CLABSI-prediction-model
 python -m venv .venv
-source .venv/bin/activate        # Windows: .venv\Scripts\activate
-pip install numpy pandas scikit-learn scipy statsmodels matplotlib seaborn shap jupyter
-```
-
-Verify the repository name matches the clone URL exactly before publishing. The clinical dataset (`data/clabsi_dataset.xlsx`) contains PHI and is not bundled in the public repository.
-
-### 8.4 Contributors
-
-| Name | Role | Affiliation |
-|---|---|---|
-| Bahar Homayoun (M.Sc.) | Lead Researcher | Health Information Management, TUMS |
-| Farid Zand (M.D.) | Co-Supervisor | Anesthesiology & Critical Care Research Center, SUMS |
-| Naeimehossadat Asmarian (Ph.D.) | Co-Investigator | Anesthesiology & Critical Care Research Center, SUMS |
-| Victor Daniel Rosenthal (M.D.) | Co-Investigator | Univ. of Miami Miller School of Medicine; INICC |
-| Sharareh Rostam Niakan Kalhori (Ph.D.) | Senior Supervisor | Health Information Management, TUMS; TU Braunschweig & MHH |
-
-### 8.5 Citation
-
-```bibtex
-@misc{homayoun_clabsi_2025,
-  author       = {Homayoun, Bahar and Zand, Farid and Asmarian, Naeimehossadat and Rosenthal, Victor Daniel and Niakan Kalhori, Sharareh},
-  title        = {Interpretable Machine Learning Framework for CLABSI Risk Prediction in Critical Care},
-  year         = {2025},
-  publisher    = {GitHub},
-  howpublished = {\url{https://github.com/bahariiiiii/CLABSI-prediction-model}}
-}
-```
-
-### 8.6 Recommendations before release
-
-1. Run the full pipeline end-to-end and freeze the benchmark tables and cohort counts in the README.
-2. Record the ethics approval and cohort baseline table in the README for public traceability.
-
-## 9 References
-
-[1] `Under-development-SVM-model.ipynb` — CLABSI prediction pipeline notebook (project file; all implementation details, split logic, calibration, LOIO loop, and artifact filenames verified from its source).
+source .venv/bin/activate # Windows: .venv\Scripts\activate
+pip install numpy pandas scikit-learn scipy statsmodels matplotlib seaborn shap jupyter.
